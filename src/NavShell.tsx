@@ -1,0 +1,158 @@
+import { useState, useEffect, useRef } from "react";
+import { CircleUser, LogOut } from "lucide-react";
+import type { NavShellProps, NavItem, NavGroup } from "./types";
+import "./NavShell.css";
+
+function isNavGroup(item: NavItem | NavGroup): item is NavGroup {
+  return "children" in item;
+}
+
+export function NavShell({
+  items,
+  user,
+  userMenuItems,
+  currentPath,
+  isAdmin,
+  onLogout,
+  authDashboardUrl = "https://auth.trivorn.org",
+}: NavShellProps) {
+  const [openGroupIndex, setOpenGroupIndex] = useState<number | null>(null);
+  const [userOpen, setUserOpen] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
+  const userRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setOpenGroupIndex(null);
+      }
+      if (userRef.current && !userRef.current.contains(e.target as Node)) {
+        setUserOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  const visibleItems = items.filter(
+    (item) => !item.adminOnly || isAdmin
+  );
+
+  function isItemActive(item: NavItem | NavGroup): boolean {
+    if (isNavGroup(item)) {
+      return item.children.some((child) =>
+        currentPath.startsWith(child.href)
+      );
+    }
+    return currentPath === item.href;
+  }
+
+  return (
+    <nav className="navshell" ref={navRef}>
+      <a
+        href={authDashboardUrl}
+        className="navshell-logo"
+        title="Home"
+      >
+        T
+      </a>
+
+      <div className="navshell-nav">
+        {visibleItems.map((item, i) => {
+          if (isNavGroup(item)) {
+            const active = isItemActive(item);
+            const isOpen = openGroupIndex === i;
+            return (
+              <div key={item.label} style={{ position: "relative" }}>
+                <button
+                  className={`navshell-icon-btn${active ? " active" : ""}`}
+                  title={item.label}
+                  onClick={() =>
+                    setOpenGroupIndex(isOpen ? null : i)
+                  }
+                >
+                  <item.icon size={24} />
+                </button>
+                {isOpen && (
+                  <div className="navshell-flyout">
+                    {item.children.map((child) => (
+                      <a key={child.href} href={child.href}>
+                        {child.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          }
+
+          const active = isItemActive(item);
+          return (
+            <a
+              key={item.href}
+              href={item.href}
+              className={`navshell-icon-btn${active ? " active" : ""}`}
+              title={item.label}
+            >
+              <item.icon size={24} />
+            </a>
+          );
+        })}
+      </div>
+
+      <div ref={userRef} className="navshell-user-section">
+        <button
+          className="navshell-icon-btn"
+          title={user.name}
+          onClick={() => setUserOpen(!userOpen)}
+        >
+          {user.avatarUrl ? (
+            <img
+              src={user.avatarUrl}
+              alt="Avatar"
+              className="navshell-user-avatar"
+            />
+          ) : (
+            <CircleUser size={24} />
+          )}
+        </button>
+        {userOpen && (
+          <div className="navshell-user-dropdown">
+            <div className="navshell-user-dropdown-name">{user.name}</div>
+            {userMenuItems?.map((menuItem) => (
+              <a
+                key={menuItem.href}
+                href={menuItem.href}
+                className="navshell-user-dropdown-link"
+              >
+                {menuItem.label}
+              </a>
+            ))}
+            <button
+              className="navshell-user-dropdown-logout"
+              onClick={() => {
+                setUserOpen(false);
+                onLogout();
+              }}
+            >
+              <LogOut size={16} />
+              <span>Log out</span>
+            </button>
+          </div>
+        )}
+      </div>
+    </nav>
+  );
+}
+
+export function NavShellLayout(
+  props: NavShellProps & { children: React.ReactNode }
+) {
+  const { children, ...navProps } = props;
+  return (
+    <div className="navshell-layout">
+      <NavShell {...navProps} />
+      <div className="navshell-content">{children}</div>
+    </div>
+  );
+}
