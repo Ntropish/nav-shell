@@ -28,6 +28,13 @@
     left: 0;
     border-top: 1px solid var(--border);
   }
+
+  .navshell[data-portrait-position="top"] {
+    bottom: auto;
+    top: 0;
+    border-top: none;
+    border-bottom: 1px solid var(--border);
+  }
 }
 
 /* ── T logo ── */
@@ -150,6 +157,11 @@
     left: 50%;
     transform: translateX(-50%);
   }
+
+  .navshell[data-portrait-position="top"] .navshell-flyout {
+    bottom: auto;
+    top: calc(100% + 8px);
+  }
 }
 
 .navshell-flyout a {
@@ -191,6 +203,11 @@
   .navshell-user-dropdown {
     bottom: calc(100% + 8px);
     right: 0;
+  }
+
+  .navshell[data-portrait-position="top"] .navshell-user-dropdown {
+    bottom: auto;
+    top: calc(100% + 8px);
   }
 }
 
@@ -261,5 +278,10 @@
   .navshell-content {
     height: calc(100vh - 52px);
     margin-bottom: 52px;
+  }
+
+  .navshell-content[data-portrait-position="top"] {
+    margin-bottom: 0;
+    margin-top: 52px;
   }
 }

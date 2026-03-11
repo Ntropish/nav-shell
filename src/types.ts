@@ -27,4 +27,5 @@ export interface NavShellProps {
   isAdmin?: boolean;
   onLogout: () => void;
   authDashboardUrl?: string;
+  portraitPosition?: "top" | "bottom";
 }

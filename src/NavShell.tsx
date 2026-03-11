@@ -15,6 +15,7 @@ export function NavShell({
   isAdmin,
   onLogout,
   authDashboardUrl = "https://auth.trivorn.org",
+  portraitPosition = "bottom",
 }: NavShellProps) {
   const [openGroupIndex, setOpenGroupIndex] = useState<number | null>(null);
   const [userOpen, setUserOpen] = useState(false);
@@ -50,7 +51,7 @@ export function NavShell({
   }
 
   return (
-    <nav className="navshell" ref={navRef}>
+    <nav className="navshell" ref={navRef} data-portrait-position={portraitPosition}>
       <a
         href={authDashboardUrl}
         className="navshell-logo"
@@ -151,10 +152,11 @@ export function NavShellLayout(
   props: NavShellProps & { children: React.ReactNode }
 ) {
   const { children, ...navProps } = props;
+  const portraitPosition = navProps.portraitPosition ?? "bottom";
   return (
     <div className="navshell-layout">
       <NavShell {...navProps} />
-      <div className="navshell-content">{children}</div>
+      <div className="navshell-content" data-portrait-position={portraitPosition}>{children}</div>
     </div>
   );
 }
