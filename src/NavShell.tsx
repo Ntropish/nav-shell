@@ -41,7 +41,9 @@ export function NavShell({
   function isItemActive(item: NavItem | NavGroup): boolean {
     if (isNavGroup(item)) {
       return item.children.some((child) =>
-        currentPath.startsWith(child.href)
+        currentPath === child.href ||
+        currentPath.startsWith(child.href + "/") ||
+        currentPath.startsWith(child.href + "?")
       );
     }
     return currentPath === item.href;
