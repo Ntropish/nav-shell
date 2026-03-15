@@ -5,6 +5,7 @@ export interface NavItem {
   label: string;
   href: string;
   adminOnly?: boolean;
+  badge?: number;
 }
 
 export interface NavGroup {

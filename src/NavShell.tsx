@@ -98,6 +98,9 @@ export function NavShell({
               title={item.label}
             >
               <item.icon size={24} />
+              {item.badge != null && item.badge > 0 && (
+                <span className="navshell-badge">{item.badge > 99 ? "99+" : item.badge}</span>
+              )}
             </a>
           );
         })}
