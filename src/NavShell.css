@@ -122,6 +122,28 @@
   pointer-events: none;
 }
 
+/* ── End-aligned nav items ── */
+.navshell-nav-end {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+@media (orientation: landscape) {
+  .navshell-nav-end {
+    flex-direction: column;
+    padding: 4px 0;
+  }
+}
+
+@media (orientation: portrait) {
+  .navshell-nav-end {
+    flex-direction: row;
+    padding: 0 4px;
+  }
+}
+
 /* ── User section ── */
 .navshell-user-section {
   flex-shrink: 0;

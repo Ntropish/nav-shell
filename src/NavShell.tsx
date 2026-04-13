@@ -38,6 +38,12 @@ export function NavShell({
   const visibleItems = items.filter(
     (item) => !item.adminOnly || isAdmin
   );
+  const mainItems = visibleItems.filter(
+    (item) => !("position" in item && item.position === "end")
+  );
+  const endItems = visibleItems.filter(
+    (item) => "position" in item && item.position === "end"
+  );
 
   function isItemActive(item: NavItem | NavGroup): boolean {
     if (isNavGroup(item)) {
@@ -61,7 +67,7 @@ export function NavShell({
       </a>
 
       <div className="navshell-nav">
-        {visibleItems.map((item, i) => {
+        {mainItems.map((item, i) => {
           if (isNavGroup(item)) {
             const active = isItemActive(item);
             const isOpen = openGroupIndex === i;
@@ -105,6 +111,53 @@ export function NavShell({
           );
         })}
       </div>
+
+      {endItems.length > 0 && (
+        <div className="navshell-nav-end">
+          {endItems.map((item) => {
+            if (isNavGroup(item)) {
+              const active = isItemActive(item);
+              const endIdx = visibleItems.indexOf(item);
+              const isOpen = openGroupIndex === endIdx;
+              return (
+                <div key={item.label} style={{ position: "relative" }}>
+                  <button
+                    className={`navshell-icon-btn${active ? " active" : ""}`}
+                    title={item.label}
+                    onClick={() => setOpenGroupIndex(isOpen ? null : endIdx)}
+                  >
+                    <item.icon size={24} />
+                  </button>
+                  {isOpen && (
+                    <div className="navshell-flyout">
+                      {item.children.map((child) => (
+                        <a key={child.href} href={child.href}>
+                          {child.label}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            const active = isItemActive(item);
+            return (
+              <a
+                key={item.href}
+                href={item.href}
+                className={`navshell-icon-btn${active ? " active" : ""}`}
+                title={item.label}
+              >
+                <item.icon size={24} />
+                {item.badge != null && item.badge > 0 && (
+                  <span className="navshell-badge">{item.badge > 99 ? "99+" : item.badge}</span>
+                )}
+              </a>
+            );
+          })}
+        </div>
+      )}
 
       <div ref={userRef} className="navshell-user-section">
         <button
