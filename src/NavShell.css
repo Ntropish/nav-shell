@@ -10,7 +10,11 @@
   .navshell {
     flex-direction: column;
     width: 52px;
+    /* 100dvh tracks the dynamic mobile viewport so the side rail fits
+       the actually-visible area when the URL bar is showing. 100vh is
+       the fallback for browsers without dvh support. */
     height: 100vh;
+    height: 100dvh;
     position: fixed;
     top: 0;
     left: 0;
@@ -261,11 +265,17 @@
 
 .navshell-user-dropdown-link {
   display: block;
+  width: 100%;
+  text-align: left;
   padding: 8px 16px;
   color: var(--on-surface);
+  background: transparent;
+  border: none;
   text-decoration: none;
   font-size: 14px;
+  font-family: inherit;
   white-space: nowrap;
+  cursor: pointer;
   transition: background 0.1s;
 }
 
@@ -295,9 +305,16 @@
 }
 
 /* ── Layout wrapper ── */
+/* 100vh on mobile resolves to the *large* viewport (URL bar collapsed),
+   so on first load the wrapper overflows the actually-visible area —
+   leaving the bottom of consuming content (e.g. native video controls)
+   clipped behind the browser bar until the user scrolls. 100dvh tracks
+   the dynamic viewport so the layout fits whatever is currently
+   visible. The 100vh lines stay as fallbacks for browsers without dvh. */
 .navshell-layout {
   display: flex;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .navshell-content {
@@ -306,6 +323,7 @@
   flex: 1;
   min-width: 0;
   height: 100vh;
+  height: 100dvh;
 }
 
 @media (orientation: landscape) {
@@ -317,6 +335,7 @@
 @media (orientation: portrait) {
   .navshell-content {
     height: calc(100vh - 52px);
+    height: calc(100dvh - 52px);
     margin-bottom: 52px;
   }
 

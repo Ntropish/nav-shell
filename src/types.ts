@@ -16,9 +16,12 @@ export interface NavGroup {
   children: { label: string; href: string }[];
 }
 
+// Either render an anchor (`href` set) or a button (`onClick` set). Exactly one of the two
+// must be provided — exposing both is ambiguous, exposing neither is a dead entry.
 export interface UserMenuItem {
   label: string;
-  href: string;
+  href?: string;
+  onClick?: () => void;
 }
 
 export interface NavShellProps {

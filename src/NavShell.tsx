@@ -178,15 +178,29 @@ export function NavShell({
         {userOpen && (
           <div className="navshell-user-dropdown">
             <div className="navshell-user-dropdown-name">{user.name}</div>
-            {userMenuItems?.map((menuItem) => (
-              <a
-                key={menuItem.href}
-                href={menuItem.href}
-                className="navshell-user-dropdown-link"
-              >
-                {menuItem.label}
-              </a>
-            ))}
+            {userMenuItems?.map((menuItem) =>
+              menuItem.onClick ? (
+                <button
+                  key={menuItem.label}
+                  type="button"
+                  className="navshell-user-dropdown-link"
+                  onClick={() => {
+                    setUserOpen(false);
+                    menuItem.onClick!();
+                  }}
+                >
+                  {menuItem.label}
+                </button>
+              ) : (
+                <a
+                  key={menuItem.href ?? menuItem.label}
+                  href={menuItem.href}
+                  className="navshell-user-dropdown-link"
+                >
+                  {menuItem.label}
+                </a>
+              )
+            )}
             <button
               className="navshell-user-dropdown-logout"
               onClick={() => {
