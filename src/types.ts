@@ -7,6 +7,7 @@ export interface NavItem {
   adminOnly?: boolean;
   badge?: number;
   position?: "end";
+  className?: string;
 }
 
 export interface NavGroup {
@@ -14,6 +15,7 @@ export interface NavGroup {
   label: string;
   adminOnly?: boolean;
   children: { label: string; href: string }[];
+  className?: string;
 }
 
 // Either render an anchor (`href` set) or a button (`onClick` set). Exactly one of the two
@@ -28,7 +30,6 @@ export interface NavShellProps {
   items: (NavItem | NavGroup)[];
   user: { name: string; avatarUrl?: string };
   userMenuItems?: UserMenuItem[];
-  currentPath: string;
   isAdmin?: boolean;
   onLogout: () => void;
   authDashboardUrl?: string;

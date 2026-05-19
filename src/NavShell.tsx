@@ -7,11 +7,14 @@ function isNavGroup(item: NavItem | NavGroup): item is NavGroup {
   return "children" in item;
 }
 
+function classes(...parts: (string | undefined | false)[]): string {
+  return parts.filter(Boolean).join(" ");
+}
+
 export function NavShell({
   items,
   user,
   userMenuItems,
-  currentPath,
   isAdmin,
   onLogout,
   authDashboardUrl = "https://auth.trivorn.org",
@@ -45,17 +48,6 @@ export function NavShell({
     (item) => "position" in item && item.position === "end"
   );
 
-  function isItemActive(item: NavItem | NavGroup): boolean {
-    if (isNavGroup(item)) {
-      return item.children.some((child) =>
-        currentPath === child.href ||
-        currentPath.startsWith(child.href + "/") ||
-        currentPath.startsWith(child.href + "?")
-      );
-    }
-    return currentPath === item.href;
-  }
-
   return (
     <nav className="navshell" ref={navRef} data-portrait-position={portraitPosition}>
       <a
@@ -69,12 +61,11 @@ export function NavShell({
       <div className="navshell-nav">
         {mainItems.map((item, i) => {
           if (isNavGroup(item)) {
-            const active = isItemActive(item);
             const isOpen = openGroupIndex === i;
             return (
               <div key={item.label} style={{ position: "relative" }}>
                 <button
-                  className={`navshell-icon-btn${active ? " active" : ""}`}
+                  className={classes("navshell-icon-btn", item.className)}
                   title={item.label}
                   onClick={() =>
                     setOpenGroupIndex(isOpen ? null : i)
@@ -95,12 +86,11 @@ export function NavShell({
             );
           }
 
-          const active = isItemActive(item);
           return (
             <a
               key={item.href}
               href={item.href}
-              className={`navshell-icon-btn${active ? " active" : ""}`}
+              className={classes("navshell-icon-btn", item.className)}
               title={item.label}
             >
               <item.icon size={24} />
@@ -116,13 +106,12 @@ export function NavShell({
         <div className="navshell-nav-end">
           {endItems.map((item) => {
             if (isNavGroup(item)) {
-              const active = isItemActive(item);
               const endIdx = visibleItems.indexOf(item);
               const isOpen = openGroupIndex === endIdx;
               return (
                 <div key={item.label} style={{ position: "relative" }}>
                   <button
-                    className={`navshell-icon-btn${active ? " active" : ""}`}
+                    className={classes("navshell-icon-btn", item.className)}
                     title={item.label}
                     onClick={() => setOpenGroupIndex(isOpen ? null : endIdx)}
                   >
@@ -141,12 +130,11 @@ export function NavShell({
               );
             }
 
-            const active = isItemActive(item);
             return (
               <a
                 key={item.href}
                 href={item.href}
-                className={`navshell-icon-btn${active ? " active" : ""}`}
+                className={classes("navshell-icon-btn", item.className)}
                 title={item.label}
               >
                 <item.icon size={24} />

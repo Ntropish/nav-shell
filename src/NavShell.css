@@ -103,11 +103,6 @@
   color: var(--on-surface);
 }
 
-.navshell-icon-btn.active {
-  background: var(--primary);
-  color: var(--on-primary);
-}
-
 /* ── Badge ── */
 .navshell-badge {
   position: absolute;
